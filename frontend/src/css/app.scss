@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  color: #1f2937;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef8f8 100%);
+}
+
+.page-bg {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(11, 110, 110, 0.08), transparent 38%),
+    radial-gradient(circle at 90% 10%, rgba(217, 119, 6, 0.09), transparent 40%);
+}
+
+.page-content {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.card-panel {
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.monitor-card {
+  border-radius: 18px;
+  border-left: 4px solid #0b6e6e;
+  box-shadow: 0 10px 24px rgba(11, 110, 110, 0.08);
+}
+
+.monitor-focus {
+  border-radius: 16px;
+  border: 1px solid rgba(11, 110, 110, 0.15);
+  background: linear-gradient(160deg, #f8fffe 0%, #f7fafc 100%);
+}
+
+.ticket-number {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 0.03em;
+  color: #0b6e6e;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  border-radius: 20px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.12);
+}
+
+.app-shell .q-header {
+  backdrop-filter: saturate(140%) blur(6px);
+}
+
+.toolbar-height {
+  min-height: 72px;
+}
