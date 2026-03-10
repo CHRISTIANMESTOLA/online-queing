@@ -60,6 +60,15 @@
 
             <div class="row q-gutter-sm">
               <q-btn
+                flat
+                color="primary"
+                label="Call Again"
+                icon="campaign"
+                no-caps
+                :disable="!servingTicket"
+                @click="handleCallAgain"
+              />
+              <q-btn
                 color="positive"
                 label="Mark Done"
                 no-caps
@@ -131,6 +140,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useQueueStore } from 'src/stores/queue-store'
+import { announceQueueNumber } from 'src/utils/voice-announcer'
 
 const queueStore = useQueueStore()
 
@@ -145,6 +155,14 @@ const waitingColumns = [
 
 const servingTicket = computed(() => queueStore.staffDashboard?.serving || null)
 const waitingRows = computed(() => queueStore.staffDashboard?.waiting || [])
+
+function announceServingTicket(isRecall = false) {
+  if (!servingTicket.value?.queue_number) {
+    return
+  }
+
+  announceQueueNumber(servingTicket.value.queue_number, { isRecall })
+}
 
 async function loadStaffOffices() {
   try {
@@ -180,6 +198,7 @@ async function handleCallNext() {
 
   try {
     await queueStore.callNext(selectedOfficeId.value)
+    announceServingTicket()
   } catch (error) {
     errorMessage.value = error.message
   }
@@ -190,9 +209,14 @@ async function handleMarkServing(queueTicketId) {
 
   try {
     await queueStore.markServing(queueTicketId, selectedOfficeId.value)
+    announceServingTicket()
   } catch (error) {
     errorMessage.value = error.message
   }
+}
+
+function handleCallAgain() {
+  announceServingTicket(true)
 }
 
 async function handleMarkDone() {

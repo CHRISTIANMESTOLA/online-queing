@@ -103,7 +103,7 @@ function announceServingChanges(items) {
     const currentServing = office.now_serving || null
 
     if (currentServing && currentServing !== previousServing) {
-      announceQueueNumber(currentServing, office.name)
+      announceQueueNumber(currentServing)
     }
   }
 
@@ -135,7 +135,7 @@ onMounted(async () => {
 
   refreshTimer = setInterval(() => {
     refreshMonitor()
-  }, 8000)
+  }, 2000)
 })
 
 onBeforeUnmount(() => {
