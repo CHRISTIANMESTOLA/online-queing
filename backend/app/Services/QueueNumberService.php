@@ -28,7 +28,7 @@ class QueueNumberService
                 'office_id' => $office->id,
                 'queue_date' => $today,
                 'queue_sequence' => $nextSequence,
-                'queue_number' => $this->formatQueueNumber($office->prefix, $today, $nextSequence),
+                'queue_number' => $this->formatQueueNumber($office->prefix, $nextSequence),
                 'status' => QueueTicket::STATUS_WAITING,
             ]);
 
@@ -174,8 +174,8 @@ class QueueNumberService
         }
     }
 
-    private function formatQueueNumber(string $prefix, string $date, int $sequence): string
+    private function formatQueueNumber(string $prefix, int $sequence): string
     {
-        return sprintf('%s-%s-%03d', strtoupper($prefix), str_replace('-', '', $date), $sequence);
+        return sprintf('%s-%03d', strtoupper($prefix), $sequence);
     }
 }

@@ -66,6 +66,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import MonitorCard from 'src/components/MonitorCard.vue'
 import { useOfficeStore } from 'src/stores/office-store'
 import { useQueueStore } from 'src/stores/queue-store'
+import { announceQueueNumber, stopAnnouncements } from 'src/utils/voice-announcer'
 
 const officeStore = useOfficeStore()
 const queueStore = useQueueStore()
@@ -73,8 +74,41 @@ const queueStore = useQueueStore()
 const selectedOfficeId = ref(null)
 const errorMessage = ref('')
 let refreshTimer = null
+let hasMonitorBaseline = false
+let previousServingByOffice = new Map()
 
 const officeOptions = computed(() => officeStore.publicOffices)
+
+function buildServingSnapshot(items) {
+  const snapshot = new Map()
+
+  for (const office of items) {
+    snapshot.set(office.id, office.now_serving || null)
+  }
+
+  return snapshot
+}
+
+function announceServingChanges(items) {
+  if (!hasMonitorBaseline) {
+    previousServingByOffice = buildServingSnapshot(items)
+    hasMonitorBaseline = true
+    return
+  }
+
+  const nextSnapshot = buildServingSnapshot(items)
+
+  for (const office of items) {
+    const previousServing = previousServingByOffice.get(office.id) || null
+    const currentServing = office.now_serving || null
+
+    if (currentServing && currentServing !== previousServing) {
+      announceQueueNumber(currentServing, office.name)
+    }
+  }
+
+  previousServingByOffice = nextSnapshot
+}
 
 async function loadOffices() {
   try {
@@ -89,6 +123,7 @@ async function refreshMonitor() {
 
   try {
     await queueStore.fetchMonitor(selectedOfficeId.value)
+    announceServingChanges(queueStore.monitorItems)
   } catch (error) {
     errorMessage.value = error.message
   }
@@ -107,5 +142,7 @@ onBeforeUnmount(() => {
   if (refreshTimer) {
     clearInterval(refreshTimer)
   }
+
+  stopAnnouncements()
 })
 </script>
